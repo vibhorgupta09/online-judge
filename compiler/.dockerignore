@@ -1,0 +1,22 @@
+# Node modules (installed fresh in the container)
+node_modules
+npm-debug.log
+
+# Logs
+*.log
+
+# Environment files
+.env
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Build artifacts / temp files
+codes/
+inputs/
+outputs/
+
+# Git
+.git
+.gitignore

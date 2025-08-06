@@ -1,0 +1,81 @@
+import React, { useState, useContext } from "react";
+import { TextField, Button, Container, Typography, Box } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { AuthContext } from "../context/AuthContext";
+
+const Register = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const auth = useContext(AuthContext);
+  const login = auth.login;
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    try {
+      //  Register the user
+      await axios.post(
+        "http://localhost:3000/auth/register",
+        { name, email, password },
+        { withCredentials: true }
+      );
+
+      // 2. Auto-login immediately after successful registration
+      const res = await axios.post(
+        "http://localhost:3000/auth/login",
+        { email, password },
+        { withCredentials: true }
+      );
+
+      // 3. Set user using context (automatically updates localStorage too)
+      login(res.data.user);
+
+      // 4. Redirect to Problem List
+      navigate("/problems");
+    } catch (err) {
+      console.error("Registration failed", err);
+      alert("Something went wrong.");
+    }
+  };
+
+  return (
+    <Container>
+      <Typography variant="h4" gutterBottom>Register</Typography>
+      <form onSubmit={handleRegister}>
+        <TextField
+          fullWidth
+          required
+          label="Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          fullWidth
+          required
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        <TextField
+          fullWidth
+          required
+          label="Password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+        <Box>
+          <Button variant="contained" type="submit">Register</Button>
+        </Box>
+      </form>
+    </Container>
+  );
+};
+
+export default Register;
