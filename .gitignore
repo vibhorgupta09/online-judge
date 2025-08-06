@@ -39,10 +39,3 @@ Thumbs.db
 *.njsproj
 *.sln
 *.sw?
-
-# -----------------------
-# Compiler Temporary Files
-# -----------------------
-compiler/codes/
-compiler/inputs/
-compiler/outputs/
