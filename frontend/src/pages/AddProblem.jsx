@@ -56,7 +56,7 @@ const AddProblem = () => {
         },
         { withCredentials: true } // to send token cookie
       );
-      alert("Problem added successfully!");
+      // alert("Problem added successfully!");
       console.log(res.data);
       // Reset form
       setTitle("");

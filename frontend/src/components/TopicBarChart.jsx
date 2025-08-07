@@ -27,7 +27,6 @@ const TopicBarChart = ({ data }) => {
 
   return (
     <div>
-      <h2>Problems by Topic</h2>
       <BarChart width={1000} height={300} data={chartData}>
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
