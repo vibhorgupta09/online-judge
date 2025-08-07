@@ -15,7 +15,7 @@ try {
     }
 
     if (topic && topic.length) {
-    filter.topics = { $all: topic };
+      filter.topics = { $in: topic };
     }
 
     const problems = await Problem.find(filter).populate("createdBy", "name email");

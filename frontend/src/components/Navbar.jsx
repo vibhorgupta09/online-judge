@@ -27,17 +27,22 @@ useEffect(() => { // to sync user state with backend
 }, []);
 
   return (
-    <AppBar position="static">
+    <AppBar position="static" style={{padding: "10px", marginBottom: "10px"}}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography
-          variant="h6"
+          variant="h4"
           onClick={() => navigate("/problems")}
           style={{ color: "white", textDecoration: "none" }}
         >
           Online Judge
         </Typography>
+
+         {/* Navigation buttons */}
         <Box>
+          <Button color="inherit" onClick={() => navigate("/problems")}>Problems</Button>
           <Button color="inherit" onClick={() => navigate("/profile")}>View profile</Button>
+        </Box>
+        <Box>
           {user ? (
             <Button color="inherit" onClick={logout}>Logout</Button>
           ) : (

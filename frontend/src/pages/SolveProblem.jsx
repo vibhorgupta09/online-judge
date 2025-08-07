@@ -176,68 +176,132 @@ const SolveProblem = () => {
   }
 };
 
+function formatAIResponse(text) {
+  // Replace double asterisks with bold tags
+  let formatted = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  
+  // Replace bullets `*` with <li>, wrap them inside <ul>
+  const lines = formatted.split('\n').map(line => line.trim());
+  const listItems = lines.map(line => {
+    if (line.startsWith('*')) {
+      return `<li>${line.slice(1).trim()}</li>`;
+    }
+    return `<p>${line}</p>`;
+  });
+
+  return `<div><ul>${listItems.join('')}</ul></div>`;
+}
+
+
+
+
   return (
 
     <div className="wrapper">
+
+
+
         <div className="box1">
-            
-            <Button onClick={() => navigate(`/submissions/${problem._id}`)} variant="outlined" color="primary">
-              View Submissions
-            </Button>
-            <h3>
-              {isSolved && <span style={{ color: "green", marginLeft: "5px" }}> ✔ Solved</span>}
-            </h3>
-            <span>
-              <h2 style={{ color: verdict === "Accepted" ? "green" : "red" }}>{verdict}</h2>
-              <h3>{resultMessage}</h3>
-            </span>
-            <span><h2>{problem.title}</h2></span>
-            <p><strong>Difficulty:</strong> {problem.difficulty}</p>
-            <p><strong>Description:</strong> {problem.description}</p>
-            <p><strong>Topics:</strong> {problem.topics.join(", ")}</p>
-            <p><strong>Example Input:</strong> {problem.exampleInput}</p>
-            <p><strong>Example Output:</strong> {problem.exampleOutput}</p>
-        </div>
-        <div className="box2">
-          {aiLoading ? (
-            <p style={{ padding: "10px", fontStyle: "italic", color: "#666" }}>
-              Analyzing with AI...
-            </p>
-          ) : (
-            <div
-              style={{
-                whiteSpace: "pre-wrap",
-                backgroundColor: "#f5f5f5",
-                padding: "10px",
-                borderRadius: "5px",
-                height: "300px",
-                overflowY: "auto",
-                border: "1px solid #ccc",
-                fontFamily: "monospace"
-              }}
-            >
-              {aiContent || "AI output will appear here after analysis."}
+            <div className="greyHeader" > 
+              <div>
+                {problem.title}
+                {isSolved && <span style={{ color: "green", marginLeft: "5px" }}> ✔ Solved</span>}
+              </div>
+              <div>
+                <Button onClick={() => navigate(`/submissions/${problem._id}`)} variant="outlined" color="primary">
+                  View Submissions
+                </Button>
+              </div>
             </div>
-          )}
+            <div className="mainContent">
+
+              <span >
+                <h2 style={{ color: verdict === "Accepted" ? "green" : "red" }}>{verdict}</h2>
+                <h3>{resultMessage}</h3>
+              </span>
+            
+              <p style={{fontSize: "1.2rem"}}>
+                <strong> Difficulty: </strong>
+                <span style={{ color: problem.difficulty === 'easy' ? 'green' : problem.difficulty === 'medium' ? 'orange' : 'red' }}>
+                  {problem.difficulty}
+                </span>
+              </p>
+              <hr />
+              <p><strong>Description:</strong> {problem.description}</p>
+              <p><strong>Topics:</strong> {problem.topics.join(", ")}</p>
+              <p><strong>Example Input:</strong> {problem.exampleInput}</p>
+              <p><strong>Example Output:</strong> {problem.exampleOutput}</p>
+            </div>
         </div>
-        {/* <div className="box3">
-          <textarea
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            placeholder="Write your code here..."
-            rows="20"
-            cols="50"
-          ></textarea>
-        </div> */}
-        <div className="box3" style={{ border: "1px solid #ddd" }}>
-        <CodeMirror
-          value={code}
-          height="400px"
-          theme={eclipse}
-          extensions={[language === "cpp" ? cpp() : java()]}
-          onChange={(value) => setCode(value)}
-        />
+
+
+
+        <div className="box2">
+          <div className="greyHeader">
+            <Button variant="contained" onClick={handleComplexityAnalysis}>Analyze Complexity with AI</Button>
+            <Button variant="contained" onClick={handleDebug}>Debug with AI</Button>
+            <Button variant="contained" onClick={handleCodeQualityReview}>Review Code Quality with AI</Button>
+          </div>
+          <div className="mainContent">
+            {aiLoading ? (
+              <p style={{ padding: "10px", fontStyle: "italic", color: "#666" }}>
+                Analyzing with AI...
+              </p>
+            ) : (
+              <div>
+                {aiContent ? (
+                  <div dangerouslySetInnerHTML={{ __html: formatAIResponse(aiContent) }} />
+                ) : (
+                  "AI output will appear here after analysis."
+                )}
+              </div>
+            )}
+          </div>
+          
+        </div>
+        
+
+
+        <div className="box3">
+          <div className="greyHeader">
+            <div>
+              <select
+                value={language}
+                onChange={(e) => {
+                  const selectedLang = e.target.value;
+                  setLanguage(selectedLang);
+
+                  if (selectedLang === "cpp") {
+                    setCode(`#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello World!";\n    return 0;\n}`);
+                  } 
+                  else if (selectedLang === "java") {
+                    setCode(`import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.print("Hello World");\n    }\n}`);
+                    
+                  }
+                }}
+                style={{ padding: "5px", marginBottom: "10px" }}
+              >
+                <option value="cpp">C++</option>
+                <option value="java">Java</option>
+              </select>
+            </div>
+            <div>
+              <Button variant="contained" onClick={handleRun} style={{marginLeft: "0.5rem", marginRight: "0.5rem"}}>Run</Button> 
+              <Button variant="contained" onClick={handleSubmit} style={{marginLeft: "0.5rem", marginRight: "0.5rem"}}>Submit</Button>
+            </div>
+          </div>
+          <div className="mainContent">
+            <CodeMirror
+              value={code}
+              height="100%"
+              theme={eclipse}
+              extensions={[language === "cpp" ? cpp() : java()]}
+              onChange={(value) => setCode(value)}
+            />
+          </div>
       </div>
+
+
 
         <div className="box4">
           <textarea
@@ -259,33 +323,7 @@ const SolveProblem = () => {
           ></textarea>
         </div>
 
-        <div className="box6">
-          <select
-            value={language}
-            onChange={(e) => {
-              const selectedLang = e.target.value;
-              setLanguage(selectedLang);
-
-              if (selectedLang === "cpp") {
-                setCode(`#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << "Hello World!";\n    return 0;\n}`);
-              } 
-              else if (selectedLang === "java") {
-                setCode(`import java.util.*;\n\npublic class Main {\n    public static void main(String[] args) {\n        System.out.print("Hello World");\n    }\n}`);
-                
-              }
-            }}
-            style={{ padding: "5px", marginBottom: "10px" }}
-          >
-            <option value="cpp">C++</option>
-            <option value="java">Java</option>
-          </select>
-
-          <button onClick={handleRun}>Run</button>
-          <button onClick={handleSubmit}>Submit</button>
-          <button onClick={handleComplexityAnalysis}>Analyze Complexity with AI</button>
-          <button onClick={handleDebug}>Debug with AI</button>
-          <button onClick={handleCodeQualityReview}>Review Code Quality with AI</button>
-        </div>
+        
         
     </div>
   );

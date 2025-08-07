@@ -16,7 +16,21 @@ import {
 } from "@mui/material";
 import axios from "axios";
 
-const topicOptions = ["dp", "greedy", "graph", "binary-search"];
+const topicOptions = [
+  "math",
+  "array",
+  "string",
+  "linkedlist",
+  "tree",
+  "hashing",
+  "stack",
+  "queue",
+  "heap",
+  "dp",
+  "greedy",
+  "graph",
+  "binary-search"
+];
 
 const AddProblem = () => {
   const [title, setTitle] = useState("");

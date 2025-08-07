@@ -45,21 +45,8 @@ const ProblemList = () => {
   }, []);
 
   return (
-    <Container>
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
-        <Button
-          variant="outlined"
-          color="primary"
-          onClick={() => navigate("/add")}
-        >
-          Add New Problem
-        </Button>
-      </Box>
-
-      <Typography variant="h4" gutterBottom>
-        Problem List
-      </Typography>
-
+    <Container style={{ marginTop: "2rem" }}>
+    
       <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
         <FormControl>
           <InputLabel>Difficulty</InputLabel>
@@ -86,6 +73,15 @@ const ProblemList = () => {
             sx={{ width: 150 }}
           >
             <MenuItem value="">All</MenuItem>
+            <MenuItem value="math">Math</MenuItem>
+            <MenuItem value="array">Arrays</MenuItem>
+            <MenuItem value="string">Strings</MenuItem>
+            <MenuItem value="linkedlist">Linked List</MenuItem>
+            <MenuItem value="tree">Tree</MenuItem>
+            <MenuItem value="hashing">Hashing</MenuItem>
+            <MenuItem value="stack">Stack</MenuItem>
+            <MenuItem value="queue">Queue</MenuItem>
+            <MenuItem value="heap">Heap</MenuItem>
             <MenuItem value="dp">DP</MenuItem>
             <MenuItem value="greedy">Greedy</MenuItem>
             <MenuItem value="graph">Graph</MenuItem>
@@ -96,26 +92,44 @@ const ProblemList = () => {
         <Button variant="contained" onClick={fetchProblems}>
           Apply Filter
         </Button>
+
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", flexGrow: 1 }}>
+          <Button
+            variant="outlined"
+            color="primary"
+            onClick={() => navigate("/add")}
+          >
+            Add New Problem
+          </Button>
+        </div>
       </Box>
-      {console.log(problems)}
-      <ul>
+
+
+      <ul style={{ listStyleType: "none", padding: 0 }}>
         {problems.map(problem => (
           <li key={problem._id}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">{problem.title}</Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {problem.difficulty} • {problem.topics.join(", ")}
-                </Typography>
-                {/* <Typography variant="body1" mt={1}>
-                  {problem.description.slice(0, 100)}...
-                </Typography> */}
-                <Button variant="contained" onClick={() => navigate(`/problems/${problem._id}`)}>
-                  Solve
-                </Button>
-                <Button onClick={() => navigate(`/submissions/${problem._id}`)} >
-                  View Submissions
-                </Button>
+            <Card style={{ marginBottom: "1rem", border: "1px solid #ddd" }}>
+              <CardContent style={{ display: "flex", justifyContent: "space-between" ,gap: "1rem" }}>
+
+                <div>
+                  <Typography variant="h6">{problem.title}</Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    
+                    <div style={{ color: problem.difficulty === 'easy' ? 'green' : problem.difficulty === 'medium' ? 'orange' : 'red' }}>
+                      {problem.difficulty}
+                    </div>
+                    {problem.topics.join(", ")}
+                  </Typography>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+                  <Button variant="contained" onClick={() => navigate(`/problems/${problem._id}`)}>
+                    Solve
+                  </Button>
+                  <Button onClick={() => navigate(`/submissions/${problem._id}`)} >
+                    View Submissions
+                  </Button>
+                </div>
+                
               </CardContent>
             </Card> 
           </li>  
