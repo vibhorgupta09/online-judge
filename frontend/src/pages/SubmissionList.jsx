@@ -64,7 +64,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
+import api from "../api.js";
 import { Button, Card, CardContent, Typography, Box, Container } from "@mui/material";
 import ReusableModal from "../components/ReusableModal";
 
@@ -78,7 +78,7 @@ const SubmissionsPage = () => {
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/submissions/${id}`);
+        const res = await api.get(`/submissions/${id}`);
         setSubmissions(res.data);
       } catch (err) {
         console.error("Error fetching submissions", err);

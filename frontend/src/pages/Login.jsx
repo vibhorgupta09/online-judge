@@ -7,7 +7,7 @@ import {
   Button,
   Box,
 } from "@mui/material";
-import axios from "axios";
+import api from "../api.js";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext"; 
 
@@ -21,8 +21,8 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:3000/auth/login",
+      const res = await api.post(
+        "/auth/login",
         { email, password },
         { withCredentials: true }
       );

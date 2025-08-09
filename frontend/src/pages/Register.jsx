@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { TextField, Button, Container, Typography, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import api from "../api.js";
 import { AuthContext } from "../context/AuthContext";
 
 const Register = () => {
@@ -16,15 +16,15 @@ const Register = () => {
     e.preventDefault();
     try {
       //  Register the user
-      await axios.post(
-        "http://localhost:3000/auth/register",
+      await api.post(
+        "/auth/register",
         { name, email, password },
         { withCredentials: true }
       );
 
       // 2. Auto-login immediately after successful registration
-      const res = await axios.post(
-        "http://localhost:3000/auth/login",
+      const res = await api.post(
+        "/auth/login",
         { email, password },
         { withCredentials: true }
       );

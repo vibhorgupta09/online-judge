@@ -14,7 +14,7 @@ import {
   ListItemText,
   OutlinedInput
 } from "@mui/material";
-import axios from "axios";
+import api from "../api.js";
 
 const topicOptions = [
   "math",
@@ -44,8 +44,8 @@ const AddProblem = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:3000/problems/add",
+      const res = await api.post(
+        "/problems/add",
         {
           title,
           description,

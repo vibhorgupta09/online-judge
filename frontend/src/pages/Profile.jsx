@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import axios from "axios";
+import api from "../api.js";
 import { AuthContext } from "../context/AuthContext";
 import DifficultyPieChart from "../components/DifficultyPieChart";
 import TopicBarChart from "../components/TopicBarChart"; 
@@ -24,7 +24,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/profile", {
+        const res = await api.get("/profile", {
           withCredentials: true,
         });
 

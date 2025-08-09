@@ -13,7 +13,7 @@ import {
   CardContent,
   
 } from "@mui/material";
-import axios from "axios";
+import api from "../api.js";
 
 const ProblemList = () => {
   const navigate = useNavigate();
@@ -30,7 +30,7 @@ const ProblemList = () => {
       }
       const queryString = query.length ? `?${query.join("&")}` : "";
       console.log("Fetching problems with query:", queryString);
-      const res = await axios.get(`http://localhost:3000/problems${queryString}`, {
+      const res = await api.get(`/problems${queryString}`, {
         withCredentials: true, // for sending cookies
       });
       console.log("Fetched problems:", res.data);
@@ -108,7 +108,25 @@ const ProblemList = () => {
       <ul style={{ listStyleType: "none", padding: 0 }}>
         {problems.map(problem => (
           <li key={problem._id}>
-            <Card style={{ marginBottom: "1rem", border: "1px solid #ddd" }}>
+            <Card
+              elevation={0}
+              style={{
+                marginBottom: "1rem",
+                border: "2px solid",
+                borderColor:
+                  problem.difficulty === "easy"
+                    ? "green"
+                    : problem.difficulty === "medium"
+                    ? "orange"
+                    : "red",
+                // backgroundColor:
+                //   problem.difficulty === "easy"
+                //     ? "#d4edda" // light green
+                //     : problem.difficulty === "medium"
+                //     ? "#fff3cd" // light yellow
+                //     : "#f8d7da", // light red
+              }}
+            >
               <CardContent style={{ display: "flex", justifyContent: "space-between" ,gap: "1rem" }}>
 
                 <div>

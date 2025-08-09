@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import api from "../api.js";
 import { useParams } from "react-router-dom";
 import {
   Container,
@@ -17,8 +17,8 @@ const AddTestcase = ({ }) => {
   const handleAddTestcase = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        `http://localhost:3000/problems/add/${id}`,
+      const res = await api.post(
+        `/problems/add/${id}`,
         { input, expectedOutput },
         { withCredentials: true } // to send token cookie
       );

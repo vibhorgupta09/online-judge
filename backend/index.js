@@ -1,8 +1,12 @@
+// ✅ put this at the very top
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
+
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 
+// now import routes AFTER env is loaded
 const authRoutes = require("./routes/authRoutes");
 const problemRoutes = require("./routes/problemRoutes");
 const executeRoutes = require("./routes/executeRoutes");
@@ -12,15 +16,17 @@ const aiRoutes = require("./routes/aiRoutes");
 
 const { DBConnection } = require("./database/db");
 
-dotenv.config();
-
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 
 // app.use(cors({ origin: true, credentials: true }));
 app.use(
   cors({
-    origin: "http://localhost:5173", // specifically allow your frontend
+    origin: [
+      "http://localhost:5173",
+      "https://your-vercel-domain.vercel.app"
+    ],
     credentials: true,               // crucial to allow cookies
   })
 );

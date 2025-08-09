@@ -4,6 +4,11 @@ const TestCase = require("../models/TestCase");
 const Solution = require("../models/Solution");
 const axios = require("axios");
 
+console.log("Compiler URL from environment:", process.env.COMPILER_URL);
+const compilerURL = process.env.COMPILER_URL ;
+console.log("Using compiler URL:", compilerURL);
+
+
 const addSolution = async ({ problemId, userId = null, code, language, verdict }) => {
   try {
     const solution = new Solution({
@@ -29,7 +34,7 @@ const run = async (req, res) => {
       return res.status(400).json({ message: "Code, language and input are required" });
     }
     
-    const result = await axios.post('http://localhost:8000/runCompiler', {
+    const result = await axios.post(`${compilerURL}/runCompiler`, {
       code,
       language,
       input
@@ -74,7 +79,7 @@ const submit = async (req, res) => {
       const { input, expectedOutput } = testCase;
 
       // Call the compiler API for each test case
-      const response = await axios.post("http://localhost:8000/runCompiler", {
+      const response = await axios.post(`${compilerURL}/runCompiler`, {
         code,
         language,
         input

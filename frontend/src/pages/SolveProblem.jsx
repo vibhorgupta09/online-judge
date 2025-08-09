@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api.js";
 import "../../style/solveProblem.css"; 
 import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -25,7 +25,7 @@ const SolveProblem = () => {
   const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/problems/${id}`, { withCredentials: true })
+    api.get(`/problems/${id}`, { withCredentials: true })
       .then(res =>{ 
         setProblem(res.data.problem)
         setInput(res.data.problem.exampleInput);
@@ -41,7 +41,7 @@ const SolveProblem = () => {
     try {
     setVerdict('');
     setResultMessage('');
-    const res = await axios.post("http://localhost:3000/execute/run", {
+    const res = await api.post("/execute/run", {
       code,
       language,
       input
@@ -64,7 +64,7 @@ const SolveProblem = () => {
     setInput('');
     setAiContent('');
     try {
-    const submitResult = await axios.post("http://localhost:3000/execute/submit", {
+    const submitResult = await api.post("/execute/submit", {
       code,
       language,
       id
@@ -97,7 +97,7 @@ const SolveProblem = () => {
   const handleComplexityAnalysis = async () => {
     try {
       setAiLoading(true);
-      const response = await axios.post("http://localhost:3000/ai/analyzeComplexity", {
+      const response = await api.post("/ai/analyzeComplexity", {
         code,
         problemDescription: problem.description
       }, {
@@ -133,7 +133,7 @@ const SolveProblem = () => {
       }
       
       setAiLoading(true);
-      const response = await axios.post("http://localhost:3000/ai/debug", {
+      const response = await api.post("/ai/debug", {
         code,
         problemDescription: problem.description,
         output
@@ -156,10 +156,10 @@ const SolveProblem = () => {
 
   const handleCodeQualityReview = async () => {
   try {
-    setAiLoading(true);
+    setAiLoading(true);   
     setAiContent("");
 
-    const response = await axios.post("http://localhost:3000/ai/reviewQuality", {
+    const response = await api.post("/ai/reviewQuality", {
       code,
     });
 
@@ -227,10 +227,11 @@ function formatAIResponse(text) {
                 </span>
               </p>
               <hr />
-              <p><strong>Description:</strong> {problem.description}</p>
-              <p><strong>Topics:</strong> {problem.topics.join(", ")}</p>
+              <p><strong>Description: </strong> {problem.description}</p>
+              <p><strong>Topics: </strong> {problem.topics.join(", ")}</p>
               <p><strong>Example Input:</strong> {problem.exampleInput}</p>
               <p><strong>Example Output:</strong> {problem.exampleOutput}</p>
+              <p><strong>Created by: </strong>{problem.createdBy? problem.createdBy.name : "Anonymous"} </p>
             </div>
         </div>
 
