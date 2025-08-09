@@ -28,6 +28,8 @@ const PORT = process.env.PORT || 3000;
 //   credentials: true,
 // }));
 
+app.set('trust proxy', 1);
+
 const allowedOrigins = [
   "http://localhost:5173",
   "https://online-judge-frontend-dusky.vercel.app",

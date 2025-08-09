@@ -74,15 +74,17 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = (req, res) => {
-  res.clearCookie("token", {
+  res.set('Cache-Control', 'no-store');
+  res.clearCookie('token', {
     httpOnly: true,
-    sameSite: "strict", // Or "None" if you're using cross-origin
-    secure: process.env.NODE_ENV === "production", // only on https in prod
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
   });
   res.status(200).json({ message: "Logged out successfully" });
 };
 
 const checkAuth = (req, res) => {
+  res.set('Cache-Control', 'no-store');
   if (req.user) {
     return res.json({ isLoggedIn: true, user: req.user });
   } else {
