@@ -21,12 +21,33 @@ const PORT = process.env.PORT || 3000;
 
 
 // app.use(cors({ origin: true, credentials: true }));
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+// const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+
+// app.use(cors({
+//   origin: FRONTEND_URL,
+//   credentials: true,
+// }));
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://online-judge-frontend-dusky.vercel.app",
+];
 
 app.use(cors({
-  origin: FRONTEND_URL,
+  origin: (origin, cb) => {
+    // allow server-to-server/no-origin (Postman/Render health checks)
+    if (!origin) return cb(null, true);
+
+    // allow all vercel preview deployments
+    if (/\.vercel\.app$/.test(origin)) return cb(null, true);
+
+    if (allowedOrigins.includes(origin)) return cb(null, true);
+
+    cb(new Error("Not allowed by CORS: " + origin));
+  },
   credentials: true,
 }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
