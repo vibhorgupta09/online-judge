@@ -12,33 +12,50 @@ const Register = () => {
   const auth = useContext(AuthContext);
   const login = auth.login;
 
+  // const handleRegister = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     //  Register the user
+  //     await api.post(
+  //       "/auth/register",
+  //       { name, email, password },
+  //       { withCredentials: true }
+  //     );
+
+  //     // 2. Auto-login immediately after successful registration
+  //     const res = await api.post(
+  //       "/auth/login",
+  //       { email, password },
+  //       { withCredentials: true }
+  //     );
+
+  //     // 3. Set user using context (automatically updates localStorage too)
+  //     login(res.data.user);
+
+  //     // 4. Redirect to Problem List
+  //     navigate("/problems");
+  //   } catch (err) {
+  //     console.error("Registration failed", err);
+  //     alert("Something went wrong.");
+  //   }
+  // };
+
   const handleRegister = async (e) => {
-    e.preventDefault();
-    try {
-      //  Register the user
-      await api.post(
-        "/auth/register",
-        { name, email, password },
-        { withCredentials: true }
-      );
+  e.preventDefault();
+  try {
+    // 1) Register
+    await api.post("/auth/register", { name, email, password }, { withCredentials: true });
 
-      // 2. Auto-login immediately after successful registration
-      const res = await api.post(
-        "/auth/login",
-        { email, password },
-        { withCredentials: true }
-      );
+    // 2) Auto-login via context (this sets the cookie + refreshes user)
+    await auth.login(email, password);
 
-      // 3. Set user using context (automatically updates localStorage too)
-      login(res.data.user);
-
-      // 4. Redirect to Problem List
-      navigate("/problems");
-    } catch (err) {
-      console.error("Registration failed", err);
-      alert("Something went wrong.");
-    }
-  };
+    // 3) Go to problems
+    navigate("/problems");
+  } catch (err) {
+    console.error("Registration failed", err);
+    alert("Something went wrong.");
+  }
+};
 
   return (
     <Container>
