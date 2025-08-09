@@ -93,6 +93,70 @@
 //   );
 // };
 
+// import React, { createContext, useEffect, useMemo, useState } from "react";
+// import api from "../api";
+
+// export const AuthContext = createContext(null);
+
+// export const AuthProvider = ({ children }) => {
+//   const [user, setUser] = useState(null);
+//   const [authLoading, setAuthLoading] = useState(true);
+
+//   const refreshAuth = async () => {
+//     try {
+//       const res = await api.get("/auth/check-auth");
+//       if (res.data?.isLoggedIn) setUser(res.data.user);
+//       else setUser(null);
+//     } catch {
+//       setUser(null);
+//     } finally {
+//       setAuthLoading(false);
+//     }
+//   };
+
+//   useEffect(() => {
+//     refreshAuth(); // run once on app load
+//   }, []);
+
+//   // auto-clear user on 401s
+//   useEffect(() => {
+//     const id = api.interceptors.response.use(
+//       (r) => r,
+//       (err) => {
+//         if (err?.response?.status === 401) setUser(null);
+//         return Promise.reject(err);
+//       }
+//     );
+//     return () => api.interceptors.response.eject(id);
+//   }, []);
+
+//   // Use this for form login
+//   const login = async (email, password) => {
+//     await api.post("/auth/login", { email, password });
+//     await refreshAuth();
+//   };
+
+//   const logout = async () => {
+//     try {
+//       await api.post("/auth/logout");
+//     } finally {
+//       setUser(null);
+//     }
+//   };
+
+//   // Handy utilities when you already have user or want to clear locally
+//   const setUserDirect = (u) => setUser(u);
+//   const clearUser = () => setUser(null);
+
+//   const value = useMemo(
+//     () => ({ user, authLoading, login, logout, refreshAuth, setUserDirect, clearUser }),
+//     [user, authLoading]
+//   );
+
+//   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+// };
+
+
 import React, { createContext, useEffect, useMemo, useState } from "react";
 import api from "../api";
 
@@ -105,8 +169,7 @@ export const AuthProvider = ({ children }) => {
   const refreshAuth = async () => {
     try {
       const res = await api.get("/auth/check-auth");
-      if (res.data?.isLoggedIn) setUser(res.data.user);
-      else setUser(null);
+      setUser(res.data?.isLoggedIn ? res.data.user : null);
     } catch {
       setUser(null);
     } finally {
@@ -115,10 +178,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    refreshAuth(); // run once on app load
+    refreshAuth(); // ask server once on app load/refresh
   }, []);
 
-  // auto-clear user on 401s
+  // if any request comes back 401, clear user
   useEffect(() => {
     const id = api.interceptors.response.use(
       (r) => r,
@@ -130,10 +193,11 @@ export const AuthProvider = ({ children }) => {
     return () => api.interceptors.response.eject(id);
   }, []);
 
-  // Use this for form login
+  // ✅ set user directly from login response (avoid immediate extra check)
   const login = async (email, password) => {
-    await api.post("/auth/login", { email, password });
-    await refreshAuth();
+    const res = await api.post("/auth/login", { email, password });
+    setUser(res.data.user);
+    return res.data.user;
   };
 
   const logout = async () => {
@@ -144,12 +208,8 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Handy utilities when you already have user or want to clear locally
-  const setUserDirect = (u) => setUser(u);
-  const clearUser = () => setUser(null);
-
   const value = useMemo(
-    () => ({ user, authLoading, login, logout, refreshAuth, setUserDirect, clearUser }),
+    () => ({ user, authLoading, login, logout, refreshAuth }),
     [user, authLoading]
   );
 
