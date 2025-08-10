@@ -143,7 +143,7 @@ const Navbar = () => {
           onClick={() => navigate("/problems")}
           style={{ color: "white", textDecoration: "none", cursor: "pointer" }}
         >
-          Online Judge
+          Noob Code
         </Typography>
 
         <Box>

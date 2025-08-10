@@ -31,6 +31,8 @@ const PORT = process.env.PORT || 3000;
 app.set('trust proxy', 1);
 
 const allowedOrigins = [
+  "https://www.noobcode.in",
+  "https://noobcode.in",
   "http://localhost:5173",
   "https://online-judge-frontend-dusky.vercel.app",
 ];
