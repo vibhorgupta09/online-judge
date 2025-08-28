@@ -69,7 +69,7 @@ app.use("/ai", aiRoutes);
 
 app.get("/", (req, res) => {
   // res.send("Welcome to Online Judge Backend!");
-  res.redirect("https://www.noobcode.in/problems");
+  // res.redirect("https://www.noobcode.in/problems");
 });
 
 app.listen(PORT, () => {

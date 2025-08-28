@@ -140,7 +140,7 @@ const Navbar = () => {
       <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
         <Typography
           variant="h4"
-          onClick={() => navigate("/problems")}
+          onClick={() => navigate("/")}
           style={{ color: "white", textDecoration: "none", cursor: "pointer" }}
         >
           Noob Code

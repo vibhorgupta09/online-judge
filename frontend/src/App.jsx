@@ -9,12 +9,14 @@ import Profile from "./pages/Profile";
 import SolveProblem from "./pages/SolveProblem";
 import AddTestcase from "./pages/AddTestcase";
 import SubmissionList from "./pages/SubmissionList";
+import Home from "./pages/Home";
 
 const App = () => {
   return (
     <Router>
       <Navbar />
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/problems" element={<ProblemList />} />
         <Route path="/add" element={<AddProblem />} />
         <Route path="/add/:id" element={<AddTestcase />} />
