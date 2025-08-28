@@ -105,7 +105,7 @@ export default function Home() {
               <Stack spacing={2}>
                 <Chip
                   icon={<SchoolIcon />}
-                  label="Beginner-friendly Online Judge"
+                  label="Beginner friendly Online Judge"
                   color="primary"
                   variant="outlined"
                   sx={{ width: "fit-content", fontWeight: 700 }}
