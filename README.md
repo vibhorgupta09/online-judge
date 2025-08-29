@@ -23,14 +23,15 @@ https://www.noobcode.in/
 
 SCREENSHOTS
 
-### Landing Page
-![Solve Problem](./screenshots/landing.png)
+### Landing Pages
+![Landing Page 1](./screenshots/landing1.png)
+![Landing Page 2](./screenshots/landing2.png)
 
 ### Solve Problem Page
 ![Solve Problem](./screenshots/solveProblem.png)
 
 ### Profile Page
-![Solve Problem](./screenshots/profile.png)
+![Profile](./screenshots/profile.png)
 
 ### Problem List
 ![Problem List](./screenshots/problemList.png)
