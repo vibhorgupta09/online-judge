@@ -1,8 +1,8 @@
 import { useParams } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useRef,useEffect, useState } from "react";
 import api from "../api.js";
 import "../../style/solveProblem.css"; 
-import { Button } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import CodeMirror from "@uiw/react-codemirror";
 import { cpp } from "@codemirror/lang-cpp";
@@ -22,6 +22,7 @@ const SolveProblem = () => {
   const [input, setInput] = useState('');
   const [language, setLanguage] = useState('cpp');
   const [aiContent, setAiContent] = useState('');
+  const [loading, setLoading] = useState(false);
   const [aiLoading, setAiLoading] = useState(false);
 
   useEffect(() => {
@@ -38,6 +39,7 @@ const SolveProblem = () => {
 
   const handleRun = async () => {
     setAiContent('');
+    setLoading(true);
     try {
     setVerdict('');
     setResultMessage('');
@@ -57,12 +59,15 @@ const SolveProblem = () => {
     } catch (err) {
       console.error("Error running code:", err);
       setOutput("Error while executing");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleSubmit = async () => {
     setInput('');
     setAiContent('');
+    setLoading(true);
     try {
     const submitResult = await api.post("/execute/submit", {
       code,
@@ -91,6 +96,8 @@ const SolveProblem = () => {
     } catch (err) {
       console.error("Error submitting code:", err);
       // setOutput("Error while executing");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -227,11 +234,90 @@ function formatAIResponse(text) {
                 </span>
               </p>
               <hr />
-              <p><strong>Description: </strong> {problem.description}</p>
+              {/* <p><strong>Description: </strong> {problem.description}</p>
               <p><strong>Topics: </strong> {problem.topics.join(", ")}</p>
               <p><strong>Example Input:</strong> {problem.exampleInput}</p>
               <p><strong>Example Output:</strong> {problem.exampleOutput}</p>
-              <p><strong>Created by: </strong>{problem.createdBy? problem.createdBy.name : "Anonymous"} </p>
+              <p><strong>Created by: </strong>{problem.createdBy? problem.createdBy.name : "Anonymous"} </p> */}
+
+              <div>
+                <label><strong>Description:</strong></label>
+                <textarea
+                  ref={el => {
+                    if (el) {
+                      el.style.height = "0px";              // reset
+                      el.style.height = el.scrollHeight + "px"; // fit content
+                    }
+                  }}
+                  value={problem.description}
+                  disabled
+                  readOnly
+                  style={{
+                    width: "100%",
+                    border: "none",
+                    outline: "none",
+                    resize: "none",
+                    background: "transparent",
+                    color: "inherit",
+                    font: "inherit",
+                    overflow: "hidden",
+                    whiteSpace: "pre-wrap"
+                  }}
+                />
+
+                <p><strong>Topics: </strong> {problem.topics.join(", ")}</p>
+                
+                <label><strong>Example Input:</strong></label>
+                <textarea
+                  ref={el => {
+                    if (el) {
+                      el.style.height = "0px";
+                      el.style.height = el.scrollHeight + "px";
+                    }
+                  }}
+                  value={problem.exampleInput}
+                  disabled
+                  readOnly
+                  style={{
+                    width: "100%",
+                    border: "none",
+                    outline: "none",
+                    resize: "none",
+                    background: "transparent",
+                    color: "inherit",
+                    font: "inherit",
+                    overflow: "hidden",
+                    whiteSpace: "pre-wrap"
+                  }}
+                />
+
+                <label><strong>Example Output:</strong></label>
+                <textarea
+                  ref={el => {
+                    if (el) {
+                      el.style.height = "0px";
+                      el.style.height = el.scrollHeight + "px";
+                    }
+                  }}
+                  value={problem.exampleOutput}
+                  disabled
+                  readOnly
+                  style={{
+                    width: "100%",
+                    border: "none",
+                    outline: "none",
+                    resize: "none",
+                    background: "transparent",
+                    color: "inherit",
+                    font: "inherit",
+                    overflow: "hidden",
+                    whiteSpace: "pre-wrap"
+                  }}
+                />
+
+                <p><strong>Created by: </strong>{problem.createdBy? problem.createdBy.name : "Anonymous"} </p>
+              </div>
+
             </div>
         </div>
 
@@ -286,9 +372,19 @@ function formatAIResponse(text) {
                 <option value="java">Java</option>
               </select>
             </div>
-            <div>
+            {/* <div>
               <Button variant="contained" onClick={handleRun} style={{marginLeft: "0.5rem", marginRight: "0.5rem"}}>Run</Button> 
               <Button variant="contained" onClick={handleSubmit} style={{marginLeft: "0.5rem", marginRight: "0.5rem"}}>Submit</Button>
+            </div> */}
+            <div>
+              {loading ? (
+                <CircularProgress size={28} style={{ marginLeft: "1rem" }} />
+              ) : (
+                <>
+                  <Button variant="contained" onClick={handleRun} style={{marginLeft: "0.5rem", marginRight: "0.5rem"}}>Run</Button> 
+                  <Button variant="contained" onClick={handleSubmit} style={{marginLeft: "0.5rem", marginRight: "0.5rem"}}>Submit</Button>
+                </>
+              )}
             </div>
           </div>
           <div className="mainContent">
