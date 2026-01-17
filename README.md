@@ -40,35 +40,98 @@ SCREENSHOTS
 ![Submissions](./screenshots/submissions.png)
 
 
-Installation & Setup
+High‑Level Architecture
 
-1. Clone the repository
+  1. Frontend UI calls backend API.
+  2. Backend handles auth, problems, test cases, submissions, profile, AI.
+  3. Backend proxies code execution to the compiler service (COMPILER_URL).
+  4. Compiler service compiles/executes code inside Docker, returns verdict/output.
 
-2. Backend Setup
+  ———
 
-    cd backend
-    npm install
+Core Workflows
 
-    Add a .env file:
-        PORT=5000
-        MONGO_URI=your_mongodb_uri
-        JWT_SECRET=your_secret
+  1) Browse + Filter Problems
 
-    Start server:   
-    node index.js
+  - Frontend ProblemList.jsx calls GET /problems with query filters (difficulty, topic).
+  - Backend problemController.getAllProblems builds Mongo filters and returns list.
+  - Data model: Problem with title, description, difficulty, topics, example IO, createdBy.
 
-3. Frontend Setup
+  2) Add Problem + Testcases
 
-    cd frontend
-    npm install
-    npm run dev
+  - UI: AddProblem.jsx → POST /problems/add
+  - Backend problemController.addProblem saves Problem with optional creator.
+  - UI navigates to AddTestcase.jsx → POST /problems/add/:id
+  - Backend problemController.addTestcase saves TestCase documents.
 
-4. Compiler Service
-	•	Go into the compiler folder.
-	•	Build Docker image:
-            docker build -t oj-compiler .
-            docker run -p 8080:8080 oj-compiler
+  3) Solve (Run) Code
 
+  - UI SolveProblem.jsx → POST /execute/run with {code, language, input}
+  - Backend executeController.run forwards to compiler service /runCompiler
+  - Compiler service:
+      - writes code + input (generateFiles.js)
+      - compiles/executes with 3s timeout (executeCpp.js, executeJava.js)
+      - returns {verdict, output} or {verdict, details}
+  - UI prints output or compile/runtime error details.
+
+  4) Submit Code (Judging against Testcases)
+
+  - UI SolveProblem.jsx → POST /execute/submit (JWT required)
+  - Backend:
+      - fetches testcases from TestCase
+      - for each test case, calls compiler service /runCompiler
+      - compares output to expected
+      - on first mismatch, returns Wrong Answer
+      - on compile/runtime error, returns that verdict
+      - on success, marks Accepted
+      - saves Solution record (code, language, verdict)
+      - updates User.solvedProblems if logged in
+  - UI shows verdict + count passed.
+
+  5) AI Assistance
+
+  - UI triggers /ai/analyzeComplexity, /ai/debug, /ai/reviewQuality
+  - Backend aiController calls Gemini 2.0 Flash and returns short, formatted guidance:
+      - Complexity estimate (if code seems correct)
+      - Debug guidance from output
+      - Code quality summary + improvements
+
+  6) Auth + Profile
+
+  - Auth endpoints: /auth/register, /auth/login, /auth/logout, /auth/check-auth
+  - JWT is stored as HTTP‑only cookie (token)
+  - Middleware verifyToken attaches req.user when token valid
+  - Profile page calls GET /profile to fetch:
+      - user info
+      - solved problems grouped by difficulty & topic
+      - created problems
+      - submission history
+
+  7) Submissions
+
+  - UI SubmissionList.jsx → GET /submissions/:problemId
+  - Backend returns Solution history (populated user name/email)
+
+  ———
+
+  Compiler Service Details
+
+  - compiler/index.js is a standalone Express server.
+  - Languages supported: C++, Java.
+  - Code + input saved to compiler/codes and compiler/inputs.
+  - Executes with a 3s timeout, returns:
+      - Accepted with output
+      - Compile Time Error, Runtime Error, Time Limit Exceeded, etc.
+  - Docker image includes g++ and OpenJDK 17.
+
+  ———
+
+  Front‑End Flow
+
+  - App.jsx wires routes for home, problem list, add, solve, profile, submissions.
+  - Auth state via AuthContext.jsx.
+  - Code editor is CodeMirror with C++/Java mode.
+  - Charts on Profile use Recharts.
 
 
 
