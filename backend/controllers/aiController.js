@@ -50,7 +50,7 @@ const debug = async (req, res) => {
       return res.status(400).json({ message: "Code, problem description, and output are required" });
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
     const result = await model.generateContent(`
     You are an expert code debugger. Help the user identify issues in their code based on the problem description, the submitted code, and the output received.
@@ -96,7 +96,7 @@ const debug = async (req, res) => {
 //     }
 
 //     const result = await ai.models.generateContent({
-//       model: "gemini-2.0-flash",
+//       model: "gemini-2.5-flash-lite",
 //       contents: `
     //     You are a code reviewer assistant.
 
@@ -127,7 +127,7 @@ const reviewCodeQuality = async (req, res) => {
       return res.status(400).json({ message: "Code is required for review" });
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
     const result = await model.generateContent(`
         You are a concise and professional code reviewer.
