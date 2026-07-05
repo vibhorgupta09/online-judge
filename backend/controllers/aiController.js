@@ -12,7 +12,7 @@ const analyzeComplexity = async (req, res) => {
       return res.status(400).json({ message: "Code and problem description are required" });
     }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
 
     const result = await model.generateContent(`
       You are a code analysis assistant.
